@@ -1,0 +1,20 @@
+{{ define "extends" }}base.html{{ end }}
+
+{{ define "content" }}
+	<h1>Upload</h1>
+	{{ if .ErrorMessage }}<p class="error">{{ .ErrorMessage }}</p>{{ end }}
+	{{ if .SuccessMessage }}<p class="error">{{ .SuccessMessage }}</p>{{ end }}
+	<form method="POST" enctype="multipart/form-data">
+		<p>
+			<label for="user">Username/User ID</label>
+			<input id="user" type="text" name="user" placeholder="username or user id">
+		</p>
+		<p>
+			<label for="data">File</label>
+			<input id="data" type="file" name="data" placeholder="data">
+		</p>
+		<p class="submit">
+			<button>Upload</button>
+		</p>
+	</form>
+{{ end }}

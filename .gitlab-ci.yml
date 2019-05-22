@@ -1,0 +1,100 @@
+stages:
+  - build
+  - lint
+  - test
+  - upload
+
+build:
+  stage: build
+  image: "debian:stretch-backports"
+  before_script:
+    - echo 'APT::Install-Recommends "false";' >> /etc/apt/apt.conf
+    - echo 'APT::Install-Suggests "false";'   >> /etc/apt/apt.conf
+    - apt-get -y -qq update
+    - apt-get -y -qq install build-essential golang-1.11-go/stretch-backports
+    - export PATH=/usr/lib/go-1.11/bin:$PATH
+    - go version
+  script:
+    - make all
+    - make install
+  artifacts:
+    paths:
+      - metadata.yml
+      - dist_root/
+
+lint:go-fmt:
+  stage: lint
+  image: "golang:latest"
+  before_script:
+    - go version
+  script:
+    - test -z "$(find . -name vendor -prune -o -name dist_root -prune -o -name '*.go' -type f -exec gofmt -s -l {} + | tee /dev/stderr)"
+  variables:
+    GOFLAGS: "-mod=vendor"
+
+lint:go-vet:
+  stage: lint
+  image: "golang:latest"
+  before_script:
+    - go version
+  script:
+    - go generate
+    - go vet $(go list ./...)
+  variables:
+    GOFLAGS: "-mod=vendor"
+
+test:checker:
+  stage: test
+  image: "debian:stretch"
+  before_script:
+    - echo 'APT::Install-Recommends "false";' >> /etc/apt/apt.conf
+    - echo 'APT::Install-Suggests "false";'   >> /etc/apt/apt.conf
+    - apt-get -y -qq update
+    - apt-get -y -qq install curl rsync postgresql-client python3 python3-bs4 python3-requests rsync
+    - curl -sL https://github.com/fausecteam/ctf-gameserver/archive/master.tar.gz | tar -C /tmp -xz
+    - adduser --system --home /srv/happy-birthday-gdpr --group --disabled-login --no-create-home happy-birthday-gdpr
+    - rsync -av dist_root/ /
+  script:
+    - runuser -u happy-birthday-gdpr -- /srv/happy-birthday-gdpr/bin/happy-birthday-gdpr -listen localhost:4377 -database-type postgres -database-connect "host=postgres dbname=$POSTGRES_DB user=$POSTGRES_USER sslmode=disable" &
+    - while ! curl -so /dev/null "http://localhost:4377/"; do printf '.'; sleep 1; done; echo
+    - misc/test-checker.sh
+    - pg_dump -h postgres -U happy-birthday-gdpr -w -a happy-birthday-gdpr
+  services:
+    - postgres:9.6
+  variables:
+    CTF_GAMESERVER_CHECKOUT: /tmp/ctf-gameserver-master
+    PYTHONUNBUFFERED: y
+    POSTGRES_DB: happy-birthday-gdpr
+    POSTGRES_USER: happy-birthday-gdpr
+    POSTGRES_PASSWORD: ""
+
+test:unicode:
+  stage: test
+  image: "debian:stretch-backports"
+  before_script:
+    - echo 'APT::Install-Recommends "false";' >> /etc/apt/apt.conf
+    - echo 'APT::Install-Suggests "false";'   >> /etc/apt/apt.conf
+    - apt-get -y -qq update
+    - apt-get -y -qq install build-essential python3 python3.5 golang-1.11-go/stretch-backports
+    - export PATH=/usr/lib/go-1.11/bin:$PATH
+  script:
+    - misc/test-unicode-case-consistency.py
+  variables:
+    GDPR_DONT_IMPORT_CHECKER: "yes"
+    GOFLAGS: "-mod=vendor"
+
+upload:
+  stage: upload
+  script:
+    - ssh ci-upload@www.faust.cs.fau.de mkdir -p "/var/www/files/internal/ci/faustctf/2019/$CI_PROJECT_NAME"
+    - tar -v -czp -H posix -f dist_root.tar.gz -C dist_root .
+    - scp metadata.yml dist_root.tar.gz "ci-upload@www.faust.cs.fau.de:/var/www/files/internal/ci/faustctf/2019/$CI_PROJECT_NAME/"
+  after_script:
+    - find "$CI_PROJECT_DIR" -mindepth 1 -delete
+  variables:
+    GIT_STRATEGY: none
+  only:
+    - master
+  tags:
+    - faust
+    - www-upload

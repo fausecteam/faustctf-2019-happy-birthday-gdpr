@@ -1,0 +1,18 @@
+{{ define "extends" }}base.html{{ end }}
+
+{{ define "content" }}
+	<h1>Login</h1>
+	<form method="POST">
+		<p>
+			<label for="username">Username</label>
+			<input id="username" type="text" name="username" placeholder="username">
+		</p>
+		<p>
+			<label for="password">Password</label>
+			<input id="password" type="password" name="password" placeholder="password">
+		</p>
+		<p class="submit">
+			<button>Login</button>
+		</p>
+	</form>
+{{ end }}

@@ -1,0 +1,23 @@
+name: Happy Birthday GDPR
+slug: happy-birthday-gdpr
+authors:
+  - Julian Brost <julian@0x4a42.net>
+
+install:
+  debian_packages:
+    - postgresql
+    - golang-1.11-go
+  postinst_commands:
+    - touch /srv/happy-birthday-gdpr/setup-required
+    - systemctl enable happy-birthday-gdpr-setup.service
+    - systemctl enable happy-birthday-gdpr.service
+    - rmdir /srv/happy-birthday-gdpr/data
+  prevent_outgoing_connections: True
+
+checker:
+  module: happybirthdaygdpr
+  class: HappyBirthdayGdprChecker
+  debian_packages:
+    - python3-bs4
+    - python3-requests
+  pip_packages: []

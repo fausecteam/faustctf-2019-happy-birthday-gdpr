@@ -1,0 +1,128 @@
+body {
+    font-family: sans-serif;
+    background-color: #eee;
+}
+
+#wrapper {
+    max-width: 60em;
+    background-color: #fff;
+    margin: 0 auto;
+    padding: 1em;
+    border: 1px solid #bbb;
+}
+
+header, nav, main, footer {
+    overflow: auto;
+    padding: 1em;
+}
+
+header {
+    background-color: #135;
+    color: #fff;
+}
+
+header h1 {
+    margin: 0;
+    padding: 0;
+}
+
+header h1 a {
+    color: #fff;
+    text-decoration: none;
+}
+
+nav {
+    color: #fff;
+    padding: 0;
+}
+
+nav a {
+    color: #fff;
+}
+
+nav #nav-menu {
+    background-color: #357;
+}
+
+nav #nav-menu a {
+    text-decoration: none;
+    display: inline-block;
+    padding: 0.7em 1em;
+}
+
+nav #nav-menu a:hover {
+    background-color: #246;
+    text-decoration: underline;
+}
+
+nav #nav-user {
+    background-color: #579;
+    text-align: right;
+    padding: 0.5em 1em;
+}
+
+footer {
+    background-color: #666;
+    color: #fff;
+}
+
+a {
+    color: #579;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+table th, table td {
+    border: 1px solid #aaa;
+    padding: 0.25em;
+}
+
+table th {
+    background-color: #eee;
+}
+
+table.files-table td.no-files {
+    text-align: center;
+}
+
+form {
+    margin: 24px 0 0 0;
+}
+
+form p, form ul.errorlist {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid #ddd;
+}
+
+form p label {
+    display: inline-block;
+    width: 16em;
+    height: 2em;
+    margin: 0 1em 0 0;
+    padding: 1em;
+    line-height: 2em;
+    font-weight: bold;
+    text-align: right;
+    border-right: 1px solid #ddd;
+}
+
+form p input, form p select, form p span {
+    margin: 1em 0;
+    display: inline-block;
+}
+
+form p.submit {
+    padding: 2em 0 1em;
+    text-align: center;
+}
+
+form p.submit button {
+    padding: 0.3em;
+}
+
+.password-hash {
+    font-family: monospace;
+}

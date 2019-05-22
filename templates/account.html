@@ -1,0 +1,59 @@
+{{ define "extends" }}base.html{{ end }}
+
+{{ define "content" }}
+	<h1>My Account</h1>
+
+	<h2>My Files</h2>
+	<p>These files were uploaded for you:</p>
+	<table class="files-table">
+		<thead>
+		<tr>
+			<th>ID</th>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Size</th>
+		</tr>
+		</thead>
+		<tbody>
+		{{ range .Files }}
+			<tr>
+				<td>{{ .ID }}</td>
+				<td><a href="/download?{{ .ID }}">{{ .Name }}</a></td>
+				<td>{{ .MimeType }}</td>
+				<td>{{ .Data | len }}</td>
+			</tr>
+		{{ else}}
+			<tr>
+				<td colspan="4" class="no-files">(no files)</td>
+			</tr>
+		{{ end }}
+		</tbody>
+	</table>
+
+	<h2>My Data</h2>
+	<p>This is your user record stored on this platform. With the files listed above, this is all your personal data we
+		store.</p>
+	<table class="user-record">
+		<tbody>
+		<tr>
+			<th>User ID</th>
+			<td>{{ .UserRecord.ID }}</td>
+		</tr>
+		<tr>
+			<th>Username</th>
+			<td>{{ .UserRecord.Username }}</td>
+		</tr>
+		<tr>
+			<th>Password Hash</th>
+			<td class="password-hash">
+				{{ range $index, $element := .UserRecord.PasswordHash }}{{ $element | printf "%02x" }}{{ if eq (mod $index 16) 15 }}
+					<br>{{ else if eq (mod $index 4) 3 }} {{ end }}{{ end }}
+			</td>
+		</tr>
+		<tr>
+			<th>Account Creation Date</th>
+			<td>{{ .UserRecord.CreatedAt }}</td>
+		</tr>
+		</tbody>
+	</table>
+{{ end }}

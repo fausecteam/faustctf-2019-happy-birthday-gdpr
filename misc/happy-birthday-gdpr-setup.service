@@ -1,0 +1,19 @@
+[Unit]
+Description=FAUST CTF Happy Birthday GDPR Setup
+ConditionPathExists=/srv/happy-birthday-gdpr/setup-required
+Requires=postgresql.service
+After=postgresql.service
+
+[Service]
+Type=oneshot
+
+User=postgres
+Group=postgres
+
+PermissionsStartOnly=yes
+ExecStart=/usr/bin/createuser happy-birthday-gdpr
+ExecStart=/usr/bin/createdb -O happy-birthday-gdpr happy-birthday-gdpr
+ExecStartPost=/bin/rm /srv/happy-birthday-gdpr/setup-required
+
+[Install]
+WantedBy=multi-user.target

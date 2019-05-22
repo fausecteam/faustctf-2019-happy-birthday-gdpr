@@ -1,0 +1,4 @@
+This service provides flag IDs that you can retrieve from the gameserver.
+The flag IDs are a colon-separated string of the following format:
+
+    username:userid:filename:fileid

@@ -1,0 +1,23 @@
+[Unit]
+Description=FAUST CTF Happy Birthday GDPR Service
+Wants=happy-birthday-gdpr-setup.service
+After=happy-birthday-gdpr-setup.service
+
+[Service]
+User=happy-birthday-gdpr
+Group=happy-birthday-gdpr
+
+ExecStart=/srv/happy-birthday-gdpr/bin/happy-birthday-gdpr -database-type postgres -database-connect host=/run/postgresql
+Restart=on-failure
+
+CPUQuota=100%
+TasksMax=64
+MemoryMax=1024M
+
+PrivateTmp=yes
+ProtectControlGroups=yes
+ProtectHome=yes
+ProtectSystem=strict
+
+[Install]
+WantedBy=multi-user.target

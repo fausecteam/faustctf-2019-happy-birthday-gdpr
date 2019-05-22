@@ -1,0 +1,12 @@
+export PATH := /usr/lib/go-1.11/bin:$(PATH)
+export GOFLAGS := -mod=vendor
+
+.PHONY: all
+all: happy-birthday-gdpr
+
+happy-birthday-gdpr: $(wildcard *.go) go.mod go.sum
+	go build -o $@
+
+.PHONY: clean
+clean:
+	$(RM) happy-birthday-gdpr
